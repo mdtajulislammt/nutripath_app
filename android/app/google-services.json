@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "396686053235",
+    "project_id": "nutripath-app",
+    "storage_bucket": "nutripath-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396686053235:android:8beff5219cdf2cc93d3f06",
+        "android_client_info": {
+          "package_name": "nutripath.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfWgNrvs5u10D1dRxTyuTuev5NmsUZOPo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

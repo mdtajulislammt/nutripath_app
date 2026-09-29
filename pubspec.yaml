@@ -1,0 +1,31 @@
+name: nutripath
+description: "NutriPath - AI-Powered Diet, Calorie and Macro Tracker"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.2.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.2
+  shared_preferences: ^2.3.2
+  fl_chart: ^0.69.0
+  percent_indicator: ^4.2.3
+  intl: ^0.19.0
+  uuid: ^4.5.1
+  lucide_icons_flutter: ^3.1.20
+  http: ^1.6.0
+  firebase_core: ^4.15.0
+  firebase_auth: ^6.7.0
+  google_sign_in: ^6.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
