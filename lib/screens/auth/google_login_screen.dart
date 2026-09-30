@@ -117,7 +117,7 @@ class _GoogleLoginScreenState extends State<GoogleLoginScreen>
             const SnackBar(content: Text('সাইন-ইন বাতিল করা হয়েছে')),
           );
         } else {
-          _showErrorDialog(e.message ?? e.code);
+          _showErrorDialog(e.message ?? e.code, errorCode: e.code);
         }
       }
     } catch (e) {
@@ -161,7 +161,29 @@ class _GoogleLoginScreenState extends State<GoogleLoginScreen>
     }
   }
 
-  void _showErrorDialog(String errorMsg) {
+  void _showErrorDialog(String errorMsg, {String? errorCode}) {
+    String friendlyMessage = errorMsg;
+    final code = (errorCode ?? '').toLowerCase();
+    final lower = errorMsg.toLowerCase();
+
+    if (code == 'configuration-not-found' || code == 'operation-not-allowed') {
+      friendlyMessage =
+          'Firebase Console-এ Google Sign-in সক্রিয় (Enabled) করা নেই।\n\n'
+          '👉 সমাধান:\n'
+          '১. Firebase Console > Authentication > Sign-in method-এ গিয়ে Google Provider অন করুন।\n'
+          '২. অথবা এখনই কোনো সেটআপ ছাড়াই সরাসরি প্রবেশ করতে নিচের "ডেমো অ্যাকাউন্ট" ব্যবহার করুন।';
+    } else if (code == 'unauthorized-domain') {
+      friendlyMessage =
+          'এই ডোমেইনটি (localhost) Firebase Authorized Domains-এ যুক্ত নেই।\n'
+          'Firebase Console > Authentication > Settings-এ localhost যুক্ত করুন অথবা ডেমো অ্যাকাউন্ট ব্যবহার করুন।';
+    } else if (code == 'popup-blocked' || lower.contains('popup') || lower.contains('blocked')) {
+      friendlyMessage = 'ব্রাউজারে পপ-আপ ব্লক করা হয়েছে। ব্রাউজারের URL বারে পপ-আপ অনুমোদন (Allow) করুন অথবা নিচের "ডেমো অ্যাকাউন্ট" দিয়ে সরাসরি প্রবেশ করুন।';
+    } else if (lower.contains('network') || lower.contains('failed')) {
+      friendlyMessage = 'নেটওয়ার্ক সংযোগে সমস্যা হয়েছে। ইন্টারনেট কানেকশন চেক করে আবার চেষ্টা করুন।';
+    } else if (errorMsg.trim() == 'Error') {
+      friendlyMessage = 'গুগল সাইন-ইনে সমস্যা দেখা দিয়েছে। আপনি নিচের "ডেমো অ্যাকাউন্ট" ব্যবহার করে সরাসরি প্রবেশ করতে পারেন।';
+    }
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -175,16 +197,22 @@ class _GoogleLoginScreenState extends State<GoogleLoginScreen>
           ],
         ),
         content: Text(
-          'গুগল সাইন-ইনে সমস্যা হলে ডেমো অ্যাকাউন্ট দিয়েও প্রবেশ করতে পারেন।\n\n$errorMsg',
-          style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13, height: 1.4),
+          friendlyMessage,
+          style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13, height: 1.45),
         ),
         actions: [
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF10B981),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
             onPressed: () {
               Navigator.pop(ctx);
               _showQuickTestSheet();
             },
-            child: const Text('ডেমো অ্যাকাউন্ট', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF10B981))),
+            child: const Text('ডেমো অ্যাকাউন্ট দিয়ে প্রবেশ', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -467,21 +495,25 @@ class _GoogleLoginScreenState extends State<GoogleLoginScreen>
                           ),
                         ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
 
-                      // Discreet Demo Access
-                      TextButton(
+                      // Prominent Demo Access
+                      OutlinedButton.icon(
                         onPressed: _showQuickTestSheet,
-                        style: TextButton.styleFrom(
-                          foregroundColor: const Color(0xFF64748B),
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                        ),
-                        child: const Text(
-                          'ডেমো অ্যাকাউন্ট',
+                        icon: const Icon(LucideIcons.sparkles, size: 16, color: Color(0xFF10B981)),
+                        label: const Text(
+                          'ডেমো অ্যাকাউন্ট দিয়ে লগইন করুন',
                           style: TextStyle(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF10B981),
                           ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: const Color(0xFF10B981).withValues(alpha: 0.35)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          backgroundColor: const Color(0xFF10B981).withValues(alpha: 0.06),
                         ),
                       ),
                     ],
